@@ -21,22 +21,22 @@ function RenderDish({dish}){
     );  
 }
 
-function RenderComments({comments}){
+function RenderComments({comments, addComment, dishId}){
     if(comments == null) return <div></div>
-    
-    const commentsRendered = comments.map((comment)=> {            
-        return (
-            <List key={comment.id} type="unstyled">
-                <li>{comment.comment}</li>
-                <li className="text-muted">-- {comment.author},  {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))} </li>
-            </List>
-        )
-    });
 
     return(
-        <div>
-            {commentsRendered}
-            <CommentForm />
+        <div className="col-12 col-md-5 m-1" >
+            <h4>Comments</h4>
+            {comments.map((comment)=> {            
+                return (
+                    <List key={comment.id} type="unstyled">
+                        <li>{comment.comment}</li>
+                        <li className="text-muted">-- {comment.author},{' '}  
+                            {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))} </li>
+                    </List>
+                )
+            })}
+            <CommentForm dishId={dishId} addComment={addComment} />
         </div>
     )
 }
@@ -63,10 +63,9 @@ const DishDetail = (props) => {
                 <div className="col-12 col-md-5 m-1">
                     <RenderDish dish={props.dish} />
                 </div>
-                <div className="col-12 col-md-5 m-1">
-                    <h4>Comments</h4>
-                    <RenderComments comments={props.comments} />
-                </div>            
+                <RenderComments comments={props.comments} 
+                    addComment={props.addComment}
+                    dishId={props.dish.id} />          
             </div>
         </div>
     );
@@ -79,12 +78,18 @@ class CommentForm extends Component{
         super();
         this.state = { isModalOpen: false };
         this.toggleModal = this.toggleModal.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     toggleModal(){
         this.setState({
             isModalOpen: !this.state.isModalOpen
         });
+    }
+
+    handleSubmit(values){
+        this.toggleModal();
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
     }
     
     render(){
@@ -96,7 +101,7 @@ class CommentForm extends Component{
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
                     <ModalBody>
-                        <LocalForm onSubmit={this.toggleModal}>
+                        <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
                             <Row className="form-group m-auto">                               
                                 <Label htmlFor="rating">Rating</Label>
                                 <Control.select model=".rating" 
