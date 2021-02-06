@@ -211,14 +211,10 @@ export const postFeedback = (
         throw errmess;
     })
     .then(response => response.json())
-    .then(response => dispacth(addFeedback(response)))
+    .then(response => alert("Your feedback posted: " + JSON.stringify(response)))
     .catch(error => {console.log('Post feedback ', error.message)
         alert('Your feedback could not be posted\nError: ' + error.message)});
 }
 
-export const addFeedback = (feedback) => ({
-    type: ActionTypes.ADD_FEEDBACK,
-    payload: feedback
-});
 
 
