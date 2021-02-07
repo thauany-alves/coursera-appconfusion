@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 import React, { Component} from 'react';
 import { List, Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, 
     BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Label, Row } from 'reactstrap';
